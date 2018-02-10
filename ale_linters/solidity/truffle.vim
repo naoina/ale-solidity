@@ -57,6 +57,21 @@ function! ale_linters#solidity#truffle#Handle(buffer, lines) abort
           \ }
     call add(l:output, l:obj)
   endfor
+  ",/home/naoina/work/src/github.com/naoina/caytocoin/contracts/CaytoCoin.sol:53:25: Warning: This declaration shadows an existing declaration.
+  let l:warn_patterns = [
+        \ '^\(.\+\):\(\d\+\):\(\d\+\): \(.\+\)$',
+        \ '^,\(.\+\):\(\d\+\):\(\d\+\): Warning: \(.\+\)$',
+        \ ]
+  for l:match in ale#util#GetMatches(a:lines, l:warn_patterns)
+    let l:obj = {
+          \ 'filename': l:match[1],
+          \ 'lnum': l:match[2],
+          \ 'col': l:match[3],
+          \ 'text': l:match[4],
+          \ 'type': 'W',
+          \ }
+    call add(l:output, l:obj)
+  endfor
 
   return l:output
 endfunction
