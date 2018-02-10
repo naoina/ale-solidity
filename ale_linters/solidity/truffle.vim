@@ -40,10 +40,14 @@ endfunction
 
 function! ale_linters#solidity#truffle#Handle(buffer, lines) abort
   "Error parsing /path/to/truffle/project/contracts/HelloWorld.sol: ParsedContract.sol:1:2: ParserError: Expected token LBrace got 'bool'
-  let l:pattern = '^Error parsing \(.\+\): .\+:\(\d\+\):\(\d\+\): \(.\+\)$'
+  ",/path/to/truffle/project/contracts/HelloWorld.sol:49:17: TypeError: Unary operator ! cannot be applied to type uint256
+  let l:error_patterns = [
+        \ '^Error parsing \(.\+\): .\+:\(\d\+\):\(\d\+\): \(.\+\)$',
+        \ '^,\?\(.\+\):\(\d\+\):\(\d\+\): .\+Error: \(.\+\)$',
+        \ ]
 
   let l:output = []
-  for l:match in ale#util#GetMatches(a:lines, [l:pattern])
+  for l:match in ale#util#GetMatches(a:lines, l:error_patterns)
     let l:obj = {
           \ 'filename': l:match[1],
           \ 'lnum': l:match[2],
