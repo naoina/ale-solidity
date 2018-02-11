@@ -73,6 +73,17 @@ function! ale_linters#solidity#truffle#Handle(buffer, lines) abort
     call add(l:output, l:obj)
   endfor
 
+  "UnimplementedFeatureError: Only in-memory reference type can be stored.
+  for l:match in ale#util#GetMatches(a:lines, ['^\(\%\(.\+Error\): .\+\)$'])
+    let l:obj = {
+          \ 'lnum': 1,
+          \ 'col': 0,
+          \ 'text': l:match[1],
+          \ 'type': 'E',
+          \ }
+    call add(l:output, l:obj)
+  endfor
+
   return l:output
 endfunction
 
